@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html;
+charset=utf-8">
+<meta name="viewport" id="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+<script type="text/javascript" charset="utf-8" src="file:///F|/Documents/GitHub/hola_mundo/phonegap.js"></script>
+<script type="text/javascript" charset="utf-8" src="file:///F|/phonegap-1.0.0.js"></script>
+    <script type="text/javascript" charset="utf-8" src="file:///F|/json2.js"></script>
+   
+    <script type="text/javascript" charset="utf-8">
+
+
+function onBodyLoad() {
+document.addEventListener("deviceready",onDeviceReady,
+false);
+}
+function onDeviceReady() {
+navigator.notification.alert("PhoneGap is ready!");
+}
+</script>
+
+<script type="text/javascript" charset="utf-8" src="file:///F|/Documents/GitHub/hola_mundo/phonegap.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+//espera que phonegap este listo
+document.addEventListener("deviceready", onDeviceReady, false);
+
+// PhoneGap esta listo y cuando ocurre el evento se ejecuta
+    function onDeviceReady() {
+        var element = document.getElementById('deviceProperties');
+
+        element.innerHTML = 'Nombre del dispositivo:' + device.name + '<br />' + 
+                            'Versión Phonegap: ' + device.phonegap + '<br />' + 
+                            'Plataforma: '  + device.platform + '<br />' + 
+                            'UUID: ' + device.uuid     + '<br />' + 
+                            'Versión:' + device.version  + '<br />';
+    }
+	// -----------------inicia camara---------------
+	
+	// Función 'callback' satisfactoria
+    //
+    function captureSuccess(mediaFiles) {
+        var i, len;
+        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
+            uploadFile(mediaFiles[i]);
+        }       
+    }
+
+    // Llamada si algún error ocurre.
+    // 
+    function captureError(error) {
+        var msg = 'Ocurrió un error mientras se capturaba: ' + error.code;
+        navigator.notification.alert(msg, null, 'Uh oh!');
+    }
+
+    // Un botón llamara esta función
+    //
+    function captureImage() {
+        // Lanza la aplicación de cámara, 
+        // y permite capturar hasta 2 imágenes
+        navigator.device.capture.captureImage(captureSuccess, captureError, {limit: 2});
+    }
+
+    // Sube los ficheros al servidor
+    function uploadFile(mediaFile) {
+        var ft = new FileTransfer(),
+            path = mediaFile.fullPath,
+            name = mediaFile.name;
+
+        ft.upload(path,
+            "http://my.domain.com/upload.php",
+            function(result) {
+                console.log('Subida correcta: ' + result.responseCode);
+                console.log(result.bytesSent + ' bytes enviados');
+            },
+            function(error) {
+                console.log('Error en la subida del fichero ' + path + ': ' + error.code);
+            },
+            { fileName: name });   
+    }
+	
+</script>
+
+</head>
+<body onLoad="onBodyLoad()">
+<h1>Bienvenido a Phonegap</h1>
+
+
+<br/>
+<h3>Optener datos</h3>
+<p id="deviceProperties">Cargando...</p>
+<br>
+<button onclick="captureImage();">Capturar imagen</button> <br>
+</body>
+</html>
